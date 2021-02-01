@@ -1,6 +1,9 @@
 # The Site Configuration
 
 # Import the theme
+# The Site Configuration
+
+# Import the theme
 theme: jekyll-theme-chirpy
 
 # Change the following value to '/PROJECT_NAME' ONLY IF your site type is GitHub Pages Project sites
@@ -130,6 +133,10 @@ kramdown:
       line_numbers: true
       start_line: 1
 
+# DO NOT change this unless you're a Pro user on Jekyll and Web development,
+# Or you think you're smart enough to change other relevant URLs within this template.
+permalink: /posts/:title/
+
 collections:
   tabs:
     output: true
@@ -178,8 +185,10 @@ compress_html:
     envs: [development]
 
 exclude:
-  - "*.gem"
-  - "*.gemspec"
+  - vendor
+  - Gemfile
+  - Gemfile.lock
+  - jekyll-theme-chirpy.gemspec
   - tools
   - README.md
   - CHANGELOG.md
