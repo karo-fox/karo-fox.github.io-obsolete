@@ -188,7 +188,8 @@ exclude:
   - vendor
   - Gemfile
   - Gemfile.lock
-  - jekyll-theme-chirpy.gemspec
+  - '*.gem'
+  - '*.gemspec'
   - tools
   - README.md
   - CHANGELOG.md
