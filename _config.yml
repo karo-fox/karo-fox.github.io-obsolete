@@ -15,6 +15,9 @@ baseurl: "" # DO NOT FILL, will cause problems with html-proofer
 # otherwise, the layout language will use the default value of 'en'.
 lang: pl-PL
 
+# Additional parameters for datetime localization, optional. › https://github.com/iamkun/dayjs/tree/dev/src/locale
+prefer_datetime_locale:
+
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
 timezone: Europe/Warsaw
 
