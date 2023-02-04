@@ -71,6 +71,4 @@ Podobne rozwiązanie prezentuje Haskell ze swoją monadą `Maybe`, z wariantami 
 
 ---
 
-[Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev][omd-post]
-
-[omd-post]: [https://ohmydev.pl/post/null-none-nothing-39a6]
+[Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev](https://ohmydev.pl/post/null-none-nothing-39a6)

@@ -69,9 +69,9 @@ const label = computed(() => capitalize(props.inputName) + ":");
 
 Vue oferuje dyrektytwę `v-model`, która odpowiada za wykonanie ciężkiej pracy związanej z połączeniem wartości jakiejś zmiennej z zawartością pola input. Działanie `v-model` bardzo dobrze opisuje dokumentacja Vue w tych miejscach:
 
-[https://vuejs.org/guide/essentials/forms.html][vue-forms]
+[https://vuejs.org/guide/essentials/forms.html](https://vuejs.org/guide/essentials/forms.html)
 
-[https://vuejs.org/guide/components/events.html#usage-with-v-model][vue-v-model]
+[https://vuejs.org/guide/components/events.html#usage-with-v-model](https://vuejs.org/guide/components/events.html#usage-with-v-model)
 
 Kierując się wskazówkami z dokumentacji dopisałam kilka kolejnych linijek:
 
@@ -285,20 +285,12 @@ Jako że jestem osobą początkującą, będę ogromnie wdzięczna wszystkim, kt
 
 Ostateczny snippet z kodem jest zaprezentowany powyżej, można go również znaleźć na moim Githubie:
 
-[https://github.com/karo-fox/vue-custom-input][vue-custom-input-github]
+[https://github.com/karo-fox/vue-custom-input](https://github.com/karo-fox/vue-custom-input)
 
 Jeśli chcesz sprawdzić moje postępy w projekcie, kod można znaleźć tutaj:
 
-[https://github.com/karo-fox/encryptor][my-github]
+[https://github.com/karo-fox/encryptor](https://github.com/karo-fox/encryptor)
 
 ---
 
-[Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev][omd-post]
-
-[vue-forms]: [https://vuejs.org/guide/essentials/forms.html]
-[vue-v-model]: [https://vuejs.org/guide/components/events.html#usage-with-v-model]
-
-[vue-custom-input-github]: [https://github.com/karo-fox/vue-custom-input]
-[my-github]: [https://github.com/karo-fox/encryptor]
-
-[omd-post]: [https://ohmydev.pl/post/niestandardowy-input-w-vue-okiem-poczatkujacego-59oi]
+[Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev](https://ohmydev.pl/post/niestandardowy-input-w-vue-okiem-poczatkujacego-59oi)
