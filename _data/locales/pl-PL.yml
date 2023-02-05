@@ -20,7 +20,7 @@ tabs:
 search:
   hint: szukaj
   cancel: Wróć
-  no_results: Ups! Nie znaleziono żadnych wyników.
+  no_results: Oops! Nie znaleziono żadnych wyników.
 
 panel:
   lastmod: Ostatnie
@@ -41,7 +41,7 @@ copyright:
     under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.
 meta: Using the :PLATFORM theme :THEME.
 not_found:
-  statment: Przepraszamy, źle umieściliśmy ten adres URL lub wskazuje on na coś, co nie istnieje.
+  statment: Sorry, we've misplaced that URL or it's pointing to something that doesn't exist.
 
 notification:
   update_found: Nowa wersja dostępna
