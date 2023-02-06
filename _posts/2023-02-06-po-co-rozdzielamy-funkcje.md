@@ -102,7 +102,7 @@ Co na tym zyskujemy? Spójny kod został rozrzucony na cztery różne funkcje. M
 
 Efekt moich rozmyślań to dość prosty wniosek: rozdzielanie funkcji jest kolejnym (tylko i aż) narzędziem w przyborniku programisty. Jest użyteczne, przydatne i ma ogromne spektrum zastosowań. Jednak myślę, że nie powinno się z niego korzystać _automatycznie_. Należy to robić świadomie.
 
-Dlatego też tak ważne są inne zasady dotyczące czystego kodu. Pamiętajmy o YAGNI (_You aren't Gonna Need It_). Przecież może się okazać, że z tych małych funkcji nie skorzystamy poza tym jednym przypadkiem. _Nie będą nam potrzebne_. Za to po napisaniu kodu możemy go rozwinąć w przyszłości.
+Dlatego też tak ważne są inne zasady dotyczące czystego kodu. Pamiętajmy o YAGNI (_You Aren't Gonna Need It_). Przecież może się okazać, że z tych małych funkcji nie skorzystamy poza tym jednym przypadkiem. _Nie będą nam potrzebne_. Za to po napisaniu kodu możemy go rozwinąć w przyszłości.
 
 ---
 
