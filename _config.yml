@@ -15,7 +15,6 @@ baseurl: "" # DO NOT FILL, will cause problems with html-proofer
 # otherwise, the layout language will use the default value of 'en'.
 lang: pl-PL
 
-
 # Change to your timezone › http://www.timezoneconverter.com/cgi-bin/findzone/findzone
 timezone: Europe/Warsaw
 
@@ -85,7 +84,7 @@ img_cdn:
 # the avatar on sidebar, support local or CORS resources
 avatar: "/assets/img/logo.png"
 
-# boolean type, the global switch for ToC in posts.
+# boolean type, the global switch for TOC in posts.
 toc: true
 
 comments:
@@ -120,7 +119,7 @@ pwa:
   enabled: true # the option for PWA feature
 
 pwa:
-  enabled: true   # the option for PWA feature
+  enabled: true # the option for PWA feature
 
 paginate: 10
 
@@ -185,13 +184,13 @@ compress_html:
     envs: [development]
 
 exclude:
-  - '*.gem'
-  - '*.gemspec'
+  - "*.gem"
+  - "*.gemspec"
   - tools
   - README.md
   - CHANGELOG.md
   - LICENSE
-  - gulpfile.js
+  - rollup.config.js
   - node_modules
   - package*.json
 
