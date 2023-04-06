@@ -10,7 +10,7 @@ Ostatnio brałam udział w dyskusji dotyczącej wyrażania braku wartości w kod
 
 # **_It's a trap_**
 
-W "Czystym Kodzie" zwracanie i przekazywanie `null` nazywane jest złą praktyką i główną operacją powodującą powstawanie błędów. Sam pomysłodawca `null reference`, Tony Hoare, mówi o niej _the billion dollar mistake_.
+W "Czystym Kodzie" zwracanie i przekazywanie `null` nazywane jest złą praktyką i główną operacją powodującą powstawanie błędów[^1]. Sam pomysłodawca `null reference`, Tony Hoare, mówi o niej _the billion dollar mistake_ [^2].
 
 Żeby uratować się przed `NullPointerException` i podobnymi potworkami w wielu językach na każdym kroku musimy sprawdzać, czy zmienna nie przechowuje wartości `null`. Powoduje to "nieczystość" kodu i utrudnia jego zrozumienie.
 
@@ -70,5 +70,8 @@ Podobne rozwiązanie prezentuje Haskell ze swoją monadą `Maybe`, z wariantami 
 `null` jest problematyczny, ale współcześnie istnieje wiele narzędzi pomagających w rozwiązaniu kłopotów z nim związanych. Zaprezentowałam te, które znam, ale to na pewno nie wszystkie. Chętnie poszerzę swoją wiedzę, więc zachęcam do dzielenia się nią w komentarzach!
 
 ---
+
+[^1]: R. C. Martin, _Czysty Kod. Podręcznik dobrego programisty_, Helion 2014, s. 130-132
+[^2]: [https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/)
 
 [Powyższy post został opublikowany oryginalnie 25.05.2022 na platforme OhMyDev](https://ohmydev.pl/post/null-none-nothing-39a6)
