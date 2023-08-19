@@ -1,6 +1,7 @@
 ---
 layout: post
-title: "Null None Nothing"
+title: Null None Nothing
+description: Opisuję, w jaki sposób różne języki programowania radzą sobie z wyrażaniem braku wartości
 date: 2023-02-04 15:16:18 +0100
 category: języki programowania
 tags: programowanie
