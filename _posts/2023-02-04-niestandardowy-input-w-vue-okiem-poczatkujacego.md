@@ -1,6 +1,7 @@
 ---
 layout: post
-title: "Niestandardowy input w Vue okiem początkującego"
+title: Niestandardowy input w Vue okiem początkującego
+description: Opisuję przygotowany przeze mnie komponent do obsługi niestandardowych pól input w aplikacji Encryptor, nad którą pracuję
 date: 2023-02-04 15:16:18 +0100
 category: tutorial
 tags: vue
@@ -293,4 +294,4 @@ Jeśli chcesz sprawdzić moje postępy w projekcie, kod można znaleźć tutaj:
 
 ---
 
-[Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev](https://ohmydev.pl/post/niestandardowy-input-w-vue-okiem-poczatkujacego-59oi)
+Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev

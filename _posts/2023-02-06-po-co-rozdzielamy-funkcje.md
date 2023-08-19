@@ -1,6 +1,7 @@
 ---
 layout: post
-title: "Po co rozdzielamy funkcje?"
+title: Po co rozdzielamy funkcje?
+description: Trochę rozważań o tym, dlaczego właściwie funkcje należy rozdzielać na mniejsze
 date: 2023-02-06 13:00:00 +0100
 category: czysty kod
 tags: programowanie
