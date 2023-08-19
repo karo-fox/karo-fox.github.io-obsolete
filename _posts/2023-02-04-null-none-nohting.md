@@ -74,4 +74,4 @@ Podobne rozwiązanie prezentuje Haskell ze swoją monadą `Maybe`, z wariantami 
 [^1]: R. C. Martin, _Czysty Kod. Podręcznik dobrego programisty_, Helion 2014, s. 130-132
 [^2]: [https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/](https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/)
 
-[Powyższy post został opublikowany oryginalnie 25.05.2022 na platforme OhMyDev](https://ohmydev.pl/post/null-none-nothing-39a6)
+Powyższy post został opublikowany oryginalnie 25.05.2022 na platforme OhMyDev
