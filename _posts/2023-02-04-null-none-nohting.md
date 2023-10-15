@@ -9,7 +9,7 @@ tags: programowanie
 
 Ostatnio brałam udział w dyskusji dotyczącej wyrażania braku wartości w kodzie. Rozmowa dość szybko wygasła, skłoniła mnie jednak do pochylenia się nad tematem.
 
-# **_It's a trap_**
+## **_It's a trap_**
 
 W "Czystym Kodzie" zwracanie i przekazywanie `null` nazywane jest złą praktyką i główną operacją powodującą powstawanie błędów[^1]. Sam pomysłodawca `null reference`, Tony Hoare, mówi o niej _the billion dollar mistake_ [^2].
 
@@ -19,7 +19,7 @@ Kolejnym problemem jest znaczenie `null`. Przykładowo, co oznacza `null` przypi
 
 Tak więc jasne jest, że `null` może sprawiać problemy. Niewątpliwie jest jednak czymś przydatnym. Na szczęście współcześnie języki programowania udostępniają wiele sposobów na ułatwienie pracy z pustymi wartościami.
 
-# JavaScript i TypeScript
+## JavaScript i TypeScript
 
 `null` to jedna z `primitive values` języka JavaScript. Reprezentuje _celowy_ brak jakiejkolwiek wartości. Język ten posiada również inną wartość: `undefined`. Ona z kolei oznacza, że obiektowi _jeszcze_ nie została przypisana wartość.
 
@@ -27,7 +27,7 @@ Takie rozróżnienie niweluje jeden ze wspomnianych problemów. Jeśli przykład
 
 Dodatkowe możliwości oferuje korzystanie z TypeScripta. Ustawienie opcji `TSConfig strictNullChecks` na `true` sprawia, że `undefined` i `null` otrzymują własne typy. Jeśli będą one używane w miejscu, gdzie oczekiwana jest konkretna wartość, zostanie wywołany `TypeError`.
 
-# Dart, C#, Kotlin
+## Dart, C#, Kotlin
 
 To języki, które oferują różne operatory ułatwiające pracę z wartościami `null`. Są proste i wygodne w użyciu oraz nie utrudniają zrozumienia kodu.
 
@@ -47,7 +47,7 @@ Jeśli wyrażenie po lewej stronie nie jest nullem, operator je zwróci. W przec
 
 Języki te oferują jeszcze więcej metod na null-safety. Co ważne, są one bardzo wygodne w użyciu i mało problematyczne. Sprawiają, że pilnowanie pustych wartości staje się proste, a pojawienie się nulla w nieoczekiwanym momencie wywoła compile-time error. Dzięki temu mamy szansę na naprawienie buga przed jego wystąpieniem.
 
-# Rust i Haskell
+## Rust i Haskell
 
 Te języki nie mają odpowiednika `null`.
 
@@ -66,7 +66,7 @@ Użycie typu `Option` wymusza obsłużenie obu wariantów, gdy chcemy uzyskać d
 
 Podobne rozwiązanie prezentuje Haskell ze swoją monadą `Maybe`, z wariantami `Just` i `Nothing`.
 
-# Podsumowanie
+## Podsumowanie
 
 `null` jest problematyczny, ale współcześnie istnieje wiele narzędzi pomagających w rozwiązaniu kłopotów z nim związanych. Zaprezentowałam te, które znam, ale to na pewno nie wszystkie. Chętnie poszerzę swoją wiedzę, więc zachęcam do dzielenia się nią w komentarzach!
 

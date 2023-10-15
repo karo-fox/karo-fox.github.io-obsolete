@@ -12,7 +12,7 @@ Ostatnio obejrzałam na youtubie film [Object-Oriented Programming is Bad](https
 > Ważna uwaga: Nie mam komercyjnego doświadczenia. Nadal się uczę, mam za sobą kilka umiarkowanie skomplikowanych projektów i zaledwie jedną kontrybucję do projektu open source. Także w żadnym wypadku nie wypowiadam się z pozycji autorytetu, a jedynie przedstawiam swoje przemyślenia.
 > {: .prompt-info }
 
-# O co chodzi z rozdzielaniem funkcji?
+## O co chodzi z rozdzielaniem funkcji?
 
 Każdy, kto zacznie się uczyć programowania, w pewnym momencie usłyszy, że funkcje należy rozdzielać na mniejsze. Jeśli zrobimy to dobrze, otrzymamy konretne korzyści:
 
@@ -22,7 +22,7 @@ Każdy, kto zacznie się uczyć programowania, w pewnym momencie usłyszy, że 
 
 Zdecydowanie tych korzyści może być więcej, ale te są dla mnie, jako początkującej, najbardziej istotne.
 
-## Przykład
+### Przykład
 
 Oto kod, który napisałam około półtora roku temu:
 
@@ -78,7 +78,7 @@ def revise(self, request, *args, **kwargs):
 
 Oczywiście kod ten bez wątpienia wymaga dalszej refaktoryzacji. Również bez wątpienia rozdzielenie go na mniejsze funkcje pomaga w jego zrozumieniu. Zatem o co chodzi Brianowi Willowi?
 
-# _Don't be afraid of long functions_
+## _Don't be afraid of long functions_
 
 W swoim materiale Brian Will posługuje się przykładem podobnym do poniższego:
 
@@ -99,7 +99,7 @@ Co na tym zyskujemy? Spójny kod został rozrzucony na cztery różne funkcje. M
 > Świadomie nie wspominam tu o rozdzieleniu warstw abstrakcji, bo też Brian Will w swoim przykładzie o tym nie mówi.
 > {: .prompt-info }
 
-# Wnioski
+## Wnioski
 
 Efekt moich rozmyślań to dość prosty wniosek: rozdzielanie funkcji jest kolejnym (tylko i aż) narzędziem w przyborniku programisty. Jest użyteczne, przydatne i ma ogromne spektrum zastosowań. Jednak myślę, że nie powinno się z niego korzystać _automatycznie_. Należy to robić świadomie.
 
