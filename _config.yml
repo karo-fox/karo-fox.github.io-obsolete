@@ -1,6 +1,9 @@
 # The Site Configuration
 
 # Import the theme
+# The Site Configuration
+
+# Import the theme
 theme: jekyll-theme-chirpy
 
 # Change the following value to '/PROJECT_NAME' ONLY IF your site type is GitHub Pages Project sites
@@ -81,7 +84,7 @@ img_cdn:
 # the avatar on sidebar, support local or CORS resources
 avatar: "/assets/img/logo.png"
 
-# boolean type, the global switch for ToC in posts.
+# boolean type, the global switch for TOC in posts.
 toc: true
 
 comments:
@@ -115,7 +118,13 @@ assets:
 pwa:
   enabled: true # the option for PWA feature
 
+pwa:
+  enabled: true # the option for PWA feature
+
 paginate: 10
+
+# The base URL of your site
+baseurl: ""
 
 # ------------ The following options are not recommended to be modified ------------------
 
@@ -180,12 +189,11 @@ compress_html:
 exclude:
   - "*.gem"
   - "*.gemspec"
+  - docs
   - tools
   - README.md
-  - CHANGELOG.md
   - LICENSE
-  - gulpfile.js
-  - node_modules
+  - rollup.config.js
   - package*.json
 
 jekyll-archives:
