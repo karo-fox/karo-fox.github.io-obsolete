@@ -30,16 +30,16 @@ panel:
 copyright:
   # Shown at the bottom of the post
   license:
-    template: This post is licensed under :LICENSE_NAME by the author.
+    template: Ten post jest licencjonowany na licencji :LICENSE_NAME przez autora.
     name: CC BY 4.0
     link: https://creativecommons.org/licenses/by/4.0/
 
   # Displayed in the footer
-  brief: Some rights reserved.
+  brief: Niektóre prawa zastrzeżone.
   verbose: >-
-    Except where otherwise noted, the blog posts on this site are licensed
-    under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.
-meta: Using the :PLATFORM theme :THEME.
+    O ile nie zaznaczono inaczej, wpisy na tym blogu są licencjonowane 
+    na licencji Creative Commons Uznanie autorstwa 4.0 Międzynarodowe (CC BY 4.0) przez autora.
+meta: Stworzono przy użyciu :PLATFORM, motyw :THEME.
 not_found:
   statment: Przepraszamy, źle umieściliśmy adres URL lub wskazana strona nie istnieje.
 
