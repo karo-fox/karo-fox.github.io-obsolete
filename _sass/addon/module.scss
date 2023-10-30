@@ -55,8 +55,8 @@
 }
 
 %link-hover {
-  color: #9d0026 !important;
-  border-bottom: 1px solid #9d0026;
+  color: var(--heading-color) !important;
+  border-bottom: 1px solid var(--heading-color);
   text-decoration: none;
 }
 
