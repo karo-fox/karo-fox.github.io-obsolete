@@ -1,0 +1,101 @@
+<p>Ostatnio obejrzałam na youtubie film <a href="https://www.youtube.com/watch?v=QM1iUe6IofM">Object-Oriented Programming is Bad</a>. Jedną z porad, których udziela Brian Will, jest: <em>Don’t be afraid of long functions</em>. A ja wszędzie w trakcie mojej nauki programowania słyszę, że rozdzielanie funkcji jest dobre i absolutnie trzeba to robić. Jasne, sam film w tytule zakłada krytykę niektórych zasad OOP, ale rozdzielanie funkcji nie dotyczy jedynie OOP. Dlatego zdecydowałam się pochylić nad tematem, trochę się pozastanawiać i coś z tego kontrastu opinii wyciągnąć. Czego rezultat tutaj prezentuję.</p>
+
+<blockquote>
+  <p class="prompt-info">Ważna uwaga: Nie mam komercyjnego doświadczenia. Nadal się uczę, mam za sobą kilka umiarkowanie skomplikowanych projektów i zaledwie jedną kontrybucję do projektu open source. Także w żadnym wypadku nie wypowiadam się z pozycji autorytetu, a jedynie przedstawiam swoje przemyślenia.</p>
+</blockquote>
+
+<h2 id="o-co-chodzi-z-rozdzielaniem-funkcji">O co chodzi z rozdzielaniem funkcji?</h2>
+
+<p>Każdy, kto zacznie się uczyć programowania, w pewnym momencie usłyszy, że funkcje należy rozdzielać na mniejsze. Jeśli zrobimy to dobrze, otrzymamy konretne korzyści:</p>
+
+<ul>
+  <li>kod będzie znacznie bardziej czytelny</li>
+  <li>nie będziemy powtarzać kodu</li>
+  <li>nie będziemy mieszać różnych poziomów abstrakcji</li>
+</ul>
+
+<p>Zdecydowanie tych korzyści może być więcej, ale te są dla mnie, jako początkującej, najbardziej istotne.</p>
+
+<h3 id="przykład">Przykład</h3>
+
+<p>Oto kod, który napisałam około półtora roku temu:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@action</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">post</span><span class="sh">'</span><span class="p">],</span> <span class="n">detail</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">revise</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">Topic</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="sh">'</span><span class="s">pk</span><span class="sh">'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">Field</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">kwargs</span><span class="p">[</span><span class="sh">'</span><span class="s">field_pk</span><span class="sh">'</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">self</span><span class="p">.</span><span class="nf">set_last_reviewed_today</span><span class="p">([</span><span class="n">topic</span><span class="p">,</span> <span class="n">field</span><span class="p">])</span>
+    <span class="n">revision</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">create_revision</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nc">TopicSerializer</span><span class="p">(</span><span class="n">topic</span><span class="p">).</span><span class="n">data</span>
+    <span class="k">return</span> <span class="nc">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">set_last_reviewed_today</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">objects</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">objects</span><span class="p">:</span>
+        <span class="n">o</span><span class="p">.</span><span class="n">last_reviewed</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">date</span><span class="p">.</span><span class="nf">today</span><span class="p">()</span>
+        <span class="n">o</span><span class="p">.</span><span class="nf">save</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">create_revision</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">get_revision_date</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">revision</span> <span class="o">=</span> <span class="n">Revision</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="n">date</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="n">field</span><span class="o">=</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">revision</span><span class="p">.</span><span class="nf">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">revision</span>
+
+<span class="k">def</span> <span class="nf">get_revision_date</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="nf">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">field</span><span class="p">.</span><span class="n">review_frequency</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">.</span><span class="n">date</span><span class="p">.</span><span class="nf">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">interval</span>
+    <span class="k">return</span> <span class="n">date</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">revise</code> to metoda, która definiuje nowy endpoint dla API napisanego przy użyciu django-rest-framework. Co tu można zauważyć? Funkcja ma tylko kilka linii, ale i tak można ją rozdzielić. <code class="language-plaintext highlighter-rouge">Topic.objects.filter(pk=kwargs['pk'])[0]</code> oraz podobne wyrażenie w kolejnej linii aż kłują w oczy. Wystarczą dwie krótkie funkcje, za którymi ukryjemy warstwę abstrakcji:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">__get_topic</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Topic</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">__get_field</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">pk</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Field</span><span class="p">.</span><span class="n">objects</span><span class="p">.</span><span class="nf">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>Dzięki ich zastosowaniu kod będzie znacznie bardziej czytelny:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@action</span><span class="p">(</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="sh">'</span><span class="s">post</span><span class="sh">'</span><span class="p">],</span> <span class="n">detail</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">revise</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">topic</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">__get_topic</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="sh">'</span><span class="s">pk</span><span class="sh">'</span><span class="p">])</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">__get_field</span><span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="sh">'</span><span class="s">field_pk</span><span class="sh">'</span><span class="p">])</span>
+    <span class="n">self</span><span class="p">.</span><span class="nf">set_last_reviewed_today</span><span class="p">([</span><span class="n">topic</span><span class="p">,</span> <span class="n">field</span><span class="p">])</span>
+    <span class="n">revision</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">create_revision</span><span class="p">(</span><span class="n">field</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nc">TopicSerializer</span><span class="p">(</span><span class="n">topic</span><span class="p">).</span><span class="n">data</span>
+    <span class="k">return</span> <span class="nc">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Oczywiście kod ten bez wątpienia wymaga dalszej refaktoryzacji. Również bez wątpienia rozdzielenie go na mniejsze funkcje pomaga w jego zrozumieniu. Zatem o co chodzi Brianowi Willowi?</p>
+
+<h2 id="dont-be-afraid-of-long-functions"><em>Don’t be afraid of long functions</em></h2>
+
+<p>W swoim materiale Brian Will posługuje się przykładem podobnym do poniższego:</p>
+
+<p>Umówmy się, że mamy funkcję, która wykonuje pewną spójną sekwencję wyrażeń. Kod ten nie powtarza się nigdzie indziej w całym programie. Sama funkcja ma kilkanaście linijek.</p>
+
+<p>Czy dobrym pomysłem jest rozbicie jej na mniejsze funkcje, na przykład tak?:</p>
+
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+    <span class="nf">doSomething</span><span class="p">()</span>
+    <span class="nf">doMoreThings</span><span class="p">()</span>
+    <span class="nf">andMore</span><span class="p">()</span>
+    <span class="nf">lastThingToDo</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Co na tym zyskujemy? Spójny kod został rozrzucony na cztery różne funkcje. Myślę, że może to wręcz utrudnić jego zrozumienie. Kod i tak już wcześniej się w programie nie powtarzał. Poza tym, jeśli to spójna sekwencja wyrażeń, to i tak korzystanie z niej zawsze będzie zakładać wywołanie dokładnie tych czterech funkcji w tej samej kolejności.</p>
+
+<blockquote>
+  <p class="prompt-info">Świadomie nie wspominam tu o rozdzieleniu warstw abstrakcji, bo też Brian Will w swoim przykładzie o tym nie mówi.</p>
+</blockquote>
+
+<h2 id="wnioski">Wnioski</h2>
+
+<p>Efekt moich rozmyślań to dość prosty wniosek: rozdzielanie funkcji jest kolejnym (tylko i aż) narzędziem w przyborniku programisty. Jest użyteczne, przydatne i ma ogromne spektrum zastosowań. Jednak myślę, że nie powinno się z niego korzystać <em>automatycznie</em>. Należy to robić świadomie.</p>
+
+<p>Dlatego też tak ważne są inne zasady dotyczące czystego kodu. Pamiętajmy o YAGNI (<em>You Aren’t Gonna Need It</em>). Przecież może się okazać, że z tych małych funkcji nie skorzystamy poza tym jednym przypadkiem. <em>Nie będą nam potrzebne</em>. Za to po napisaniu kodu możemy go rozwinąć w przyszłości.</p>
+
+<hr />
+
+<p>Jak zawsze będę, zachęcam do pozostawienia feedbacku, zwrócenia uwagi na moje pomyłki i zdrowej, konstruktywnej krytyki. Ten post, tak samo jak cały blog, powstał jako moje narzędzie do nauki, więc na pewno spodziewam się popełniania przeze mnie błędów.</p>

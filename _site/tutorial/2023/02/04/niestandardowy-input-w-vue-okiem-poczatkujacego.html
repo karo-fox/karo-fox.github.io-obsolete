@@ -1,0 +1,282 @@
+<p>Jestem początkującą programistką, interesuję się głównie backendem. Mówi się, że najlepszym sposobem nauki jest wykonanie projektu. Tak więc od miesiąca w wolnym czasie rozwijam aplikację webową, prosty szyfrator. Jego zadaniem jest przetworzenie przekazanego mu tekstu i zwrócenie zaszyfrowanej wiadomości. Używa prostych szyfrów: Cezara, zamiany… Mam w planach dodać jeszcze kilka. Jednak w międzyczasie naszła mnie ochota na wykonanie frontu do tego projektu. Wybrałam Vue, przeszłam kilka poradników, i strona startowa zaczęła wyglądać całkiem znośnie:</p>
+
+<p><img src="/assets/img/niestandardowy-input-w-vue-okiem-poczatkujacego/niestandartdowy-input-w-vue-okiem-poczatkujacego-img1.png" alt="Encryptor - strona główna" /></p>
+
+<p>Udało mi się wszystko ładnie połączyć, strona prawidłowo komunikuje z API, wszystko działa jak powinno. Ale… Brakuje dość ważnej rzeczy: danych na temat szyfru.</p>
+
+<p>O co chodzi?</p>
+
+<h3 id="jak-działają-używane-przeze-mnie-szyfry">Jak działają używane przeze mnie szyfry?</h3>
+
+<p>Szyfr Cezara jest dość popularny. Polega na utworzeniu nowego alfabetu poprzez przesunięcie ciągu znków o kilka pozycji i zamianie każdej litery w szyfrowanej wiadomości na odpowiadającą jej nową literę.</p>
+
+<p>Przykładowo, tak wygląda klucz do szyfrowania utworzony po przesunięciu o trzy pozycje:</p>
+
+<p><img src="/assets/img/niestandardowy-input-w-vue-okiem-poczatkujacego/niestandartdowy-input-w-vue-okiem-poczatkujacego-img2.png" alt="Szyfr Cezara" /></p>
+
+<p>W tym przypadku zaszyfrowana wiadomość “Oh My Dev” to: <strong>Le Jv Abs</strong></p>
+
+<p>Zamiana to kolejny zaimplementowany przeze mnie szyfr. Jest nieco mniej znany, ale jego działanie jest równie proste. Wymaga klucza, który jest zestawem par niepowtarzających się liter, np. <em>ga-de-ry-po-lu-ki</em>. Szyfrowanie polega na zamianie każdej litery w wiadomości na literę, z którą występuje w parze. Jeśli litera nie znajduje się w kluczu, jest pozostawiana bez zmian.</p>
+
+<p>Zaszyfrowana w ten sposób nazwa “Oh My Dev” (klucz: <em>ga-de-ry-po-lu-ki</em>) wygląda tak: <strong>Ph Mr Edv</strong></p>
+
+<h2 id="w-czym-tu-problem">W czym tu problem?</h2>
+
+<p>Moja strona radzi sobie z przesłaniem wiadomości, a nawet rodzajem szyfru do użycia. Te dane nie wystarczą jednak do przeprowadzenia operacji. Szyfr Cezara wymaga liczby oznaczającej przesunięcie względem alfabetu. Zamiana nie zadziała bez klucza w postaci par liter. Tak więc front mojej aplikacji musi dostarczyć sposobu na przekazanie tych informacji. W tym momencie napotkałam problem: każdy z szyfrów wymaga innego zestawu parametrów, a korzystają one z różnego rodzaju danych. Tak więc strona powinna generować różne pola w zależności od rodzaju wybranego szyfru.</p>
+
+<h2 id="zabrałam-się-więc-do-roboty">Zabrałam się więc do roboty</h2>
+
+<p>W pędzie kodowania zaczęłam wymyślać i od razu wprowadzać w życie różne pomysły, po chwili je zmieniając i odrzucając coraz to dziwniejsze rozwiązania. Zmęczona nieustającym niepowodzeniem odłożyłam sprawę na później i wyłączyłam komputer. Po kilku godzinach zajmowania się innymi sprawami usiadłam z powrotem do problemu. Tym razem przed kartką i z długopisem w ręce, nawet nie włączając komputera. Po rozpisaniu wszystkiego przed sobą rozwiązanie przyszło od razu: potrzebuję komponentu zawierającego input, ale zdolnego do określania jego typu. Zapewne każdy bardziej doświadczony programista wpadłby na coś takiego bez zastanowienia :D</p>
+
+<p>W każdym razie następnego dnia usiadłam do kodu z nowymi siłami i zaczęłam rozwiązywać mój problem.</p>
+
+<h2 id="moje-rozwiązanie">Moje rozwiązanie</h2>
+
+<p><em>Używam Vue 3 z Composition API, TypeScript</em></p>
+
+<h3 id="po-pierwsze-generowanie-pola-input">Po pierwsze: generowanie pola input</h3>
+
+<p>Dzięki przekazaniu danych z komponentu nadrzędnego można w prosty sposób określić parametry elementu input:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- CustomInput.vue --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">capitalize</span><span class="p">,</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">defineProps</span><span class="o">&lt;</span><span class="p">{</span>
+  <span class="na">inputName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">label</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">capitalize</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">inputName</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">:</span><span class="dl">"</span><span class="p">);</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">:for=</span><span class="s">"`$</span>{inputName}-id`"&gt;<span class="nt">&lt;/label</span>
+  <span class="nt">&gt;&lt;input</span> <span class="na">:type=</span><span class="s">"type"</span> <span class="na">:id=</span><span class="s">"`$</span>{inputName}-id`" :name="inputName" /&gt;
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="po-drugie-przekazywanie-danych-z-inputu">Po drugie: przekazywanie danych z inputu</h3>
+
+<p>Vue oferuje dyrektytwę <code class="language-plaintext highlighter-rouge">v-model</code>, która odpowiada za wykonanie ciężkiej pracy związanej z połączeniem wartości jakiejś zmiennej z zawartością pola input. Działanie <code class="language-plaintext highlighter-rouge">v-model</code> bardzo dobrze opisuje dokumentacja Vue w tych miejscach:</p>
+
+<p><a href="https://vuejs.org/guide/essentials/forms.html">https://vuejs.org/guide/essentials/forms.html</a></p>
+
+<p><a href="https://vuejs.org/guide/components/events.html#usage-with-v-model">https://vuejs.org/guide/components/events.html#usage-with-v-model</a></p>
+
+<p>Kierując się wskazówkami z dokumentacji dopisałam kilka kolejnych linijek:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- CustomInput.vue --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">capitalize</span><span class="p">,</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">defineProps</span><span class="o">&lt;</span><span class="p">{</span>
+  <span class="na">inputName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">modelValue</span><span class="p">:</span> <span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">emit</span> <span class="o">=</span> <span class="nf">defineEmits</span><span class="p">([</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">]);</span>
+
+<span class="kd">const</span> <span class="nx">label</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">capitalize</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">inputName</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">:</span><span class="dl">"</span><span class="p">);</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">:for=</span><span class="s">"`$</span>{inputName}-id`"&gt;<span class="nt">&lt;/label</span>
+  <span class="nt">&gt;&lt;input</span>
+    <span class="na">:type=</span><span class="s">"type"</span>
+    <span class="na">:id=</span><span class="s">"`$</span>{inputName}-id`"
+    :name="inputName"
+    :value="modelValue"
+    @input="
+      $emit('update:modelValue', ($event.target as HTMLInputElement).value)
+    "
+  /&gt;
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<p>Teraz całość już spokojnie działa. Komponentu można używać z różnymi rodzajami danych.</p>
+
+<p>Element <code class="language-plaintext highlighter-rouge">input</code> posiada parametr <code class="language-plaintext highlighter-rouge">value</code> związany z wartością <code class="language-plaintext highlighter-rouge">modelValue</code>. Przy zmianie zawartości pola emitowany jest event <code class="language-plaintext highlighter-rouge">update:modelValue</code>. Dzięki temu możemy używać <code class="language-plaintext highlighter-rouge">v-model</code> z naszym komponentem:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- script --&gt;</span>
+
+let value = ref(0);
+
+<span class="c">&lt;!-- template --&gt;</span>
+<span class="nt">&lt;CustomInput</span> <span class="na">type=</span><span class="s">"number"</span> <span class="na">input-name=</span><span class="s">"transformation"</span> <span class="na">v-model=</span><span class="s">"value"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>Vue umożliwia również implementację funkcjonalności <code class="language-plaintext highlighter-rouge">v-model</code> za pomocą <code class="language-plaintext highlighter-rouge">computed</code>. W moim przypadku wygląda to tak:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- CustomInput.vue --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">capitalize</span><span class="p">,</span> <span class="nx">computed</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">defineProps</span><span class="o">&lt;</span><span class="p">{</span>
+  <span class="na">inputName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">modelValue</span><span class="p">:</span> <span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">emit</span> <span class="o">=</span> <span class="nf">defineEmits</span><span class="p">([</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">]);</span>
+<span class="kd">let</span> <span class="nx">label</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">capitalize</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">inputName</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">:</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">({</span>
+  <span class="nf">get</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">props</span><span class="p">.</span><span class="nx">modelValue</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nf">set</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">emit</span><span class="p">(</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">},</span>
+<span class="p">});</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">:for=</span><span class="s">"`$</span>{inputName}-id`"&gt;<span class="nt">&lt;/label</span>
+  <span class="nt">&gt;&lt;input</span>
+    <span class="na">:type=</span><span class="s">"type"</span>
+    <span class="na">:id=</span><span class="s">"`$</span>{inputName}-id`"
+    :name="inputName"
+    v-model="value"
+  /&gt;
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h3 id="walidacja-danych">Walidacja danych</h3>
+
+<p>Dobrze by było, gdyby komponent mógł sprawdzać dane wprowadzane przez użytkownika i wyświetlać pomocne komunikaty. Moje API zadziała poprawnie tylko jeśli jako parametr do szyfru Cezara zostanie podana liczba. Zaś “zamiana” oczekuje ciągu liter o parzystej długości. Dodając <code class="language-plaintext highlighter-rouge">watcher</code> obserwujący wartość pola input można sprawdzać poprawność otrzymanych informacji i w prosty sposób zdecydować, jaki komunikat wyświetlić. Oto przykład sprawdzający, czy pole nie jest puste:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- CustomInput.vue --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">capitalize</span><span class="p">,</span> <span class="nx">computed</span><span class="p">,</span> <span class="nx">ref</span><span class="p">,</span> <span class="nx">watch</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">defineProps</span><span class="o">&lt;</span><span class="p">{</span>
+  <span class="na">inputName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">modelValue</span><span class="p">:</span> <span class="nx">any</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">emit</span> <span class="o">=</span> <span class="nf">defineEmits</span><span class="p">([</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">]);</span>
+<span class="kd">const</span> <span class="nx">errorMsg</span> <span class="o">=</span> <span class="nf">ref</span><span class="p">(</span><span class="dl">""</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">label</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">capitalize</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">inputName</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">:</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">({</span>
+  <span class="nf">get</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">props</span><span class="p">.</span><span class="nx">modelValue</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nf">set</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">emit</span><span class="p">(</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">},</span>
+<span class="p">});</span>
+
+<span class="nf">watch</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="p">(</span><span class="nx">newValue</span><span class="p">,</span> <span class="nx">oldValue</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">newValue</span> <span class="o">==</span> <span class="dl">""</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">errorMsg</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">"</span><span class="s2">cannot be empty</span><span class="dl">"</span><span class="p">;</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">errorMsg</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="dl">""</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">:for=</span><span class="s">"`$</span>{inputName}-id`"&gt;<span class="nt">&lt;/label</span>
+  <span class="nt">&gt;&lt;input</span>
+    <span class="na">:type=</span><span class="s">"type"</span>
+    <span class="na">:id=</span><span class="s">"`$</span>{inputName}-id`"
+    :name="inputName"
+    v-model="value"
+  /&gt;
+  <span class="nt">&lt;div&gt;</span>
+    
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<p>Możemy pójść o krok dalej i przekazywać funkcję <code class="language-plaintext highlighter-rouge">validate</code> z komponentu nadrzędnego:</p>
+
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- CustomInput.vue --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">capitalize</span><span class="p">,</span> <span class="nx">computed</span><span class="p">,</span> <span class="nx">ref</span><span class="p">,</span> <span class="nx">watch</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">props</span> <span class="o">=</span> <span class="nx">defineProps</span><span class="o">&lt;</span><span class="p">{</span>
+  <span class="na">inputName</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">type</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">modelValue</span><span class="p">:</span> <span class="nx">any</span><span class="p">;</span>
+  <span class="nx">validate</span><span class="p">?:</span> <span class="nb">Function</span><span class="p">;</span>
+<span class="p">}</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kd">const</span> <span class="nx">emit</span> <span class="o">=</span> <span class="nf">defineEmits</span><span class="p">([</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">]);</span>
+<span class="kd">const</span> <span class="nx">errorMsg</span> <span class="o">=</span> <span class="nf">ref</span><span class="p">(</span><span class="dl">""</span><span class="p">);</span>
+<span class="kd">const</span> <span class="nx">label</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">(()</span> <span class="o">=&gt;</span> <span class="nf">capitalize</span><span class="p">(</span><span class="nx">props</span><span class="p">.</span><span class="nx">inputName</span><span class="p">)</span> <span class="o">+</span> <span class="dl">"</span><span class="s2">:</span><span class="dl">"</span><span class="p">);</span>
+
+<span class="kd">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nf">computed</span><span class="p">({</span>
+  <span class="nf">get</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">props</span><span class="p">.</span><span class="nx">modelValue</span><span class="p">;</span>
+  <span class="p">},</span>
+  <span class="nf">set</span><span class="p">(</span><span class="nx">value</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">emit</span><span class="p">(</span><span class="dl">"</span><span class="s2">update:modelValue</span><span class="dl">"</span><span class="p">,</span> <span class="nx">value</span><span class="p">);</span>
+  <span class="p">},</span>
+<span class="p">});</span>
+
+<span class="nf">watch</span><span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="p">(</span><span class="nx">newValue</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="nx">errorMsg</span><span class="p">.</span><span class="nx">value</span> <span class="o">=</span> <span class="nx">props</span><span class="p">.</span><span class="nx">validate</span> <span class="p">?</span> <span class="nx">props</span><span class="p">.</span><span class="nf">validate</span><span class="p">(</span><span class="nx">newValue</span><span class="p">)</span> <span class="p">:</span> <span class="dl">""</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;label</span> <span class="na">:for=</span><span class="s">"`$</span>{inputName}-id`"&gt;<span class="nt">&lt;/label</span>
+  <span class="nt">&gt;&lt;input</span>
+    <span class="na">:type=</span><span class="s">"type"</span>
+    <span class="na">:id=</span><span class="s">"`$</span>{inputName}-id`"
+    :name="inputName"
+    v-model="value"
+  /&gt;
+  <span class="nt">&lt;div&gt;</span>
+    
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- Parent Component --&gt;</span>
+<span class="nt">&lt;</span><span class="k">script</span> <span class="na">setup</span> <span class="na">lang=</span><span class="s">"ts"</span><span class="nt">&gt;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ref</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">vue</span><span class="dl">"</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">CustomInput</span> <span class="k">from</span> <span class="dl">"</span><span class="s2">./CustomInput.vue</span><span class="dl">"</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">value</span> <span class="o">=</span> <span class="nf">ref</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nf">validateNotZero</span><span class="p">(</span><span class="nx">inputValue</span><span class="p">:</span> <span class="nx">number</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">inputValue</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">?</span> <span class="dl">"</span><span class="s2">cannot be 0</span><span class="dl">"</span> <span class="p">:</span> <span class="dl">""</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">&lt;/</span><span class="k">script</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;CustomInput</span>
+    <span class="na">type=</span><span class="s">"number"</span>
+    <span class="na">input-name=</span><span class="s">"transformation"</span>
+    <span class="na">v-model=</span><span class="s">"value"</span>
+    <span class="na">:validate=</span><span class="s">"validateNotZero"</span>
+  <span class="nt">/&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="podsumowanie">Podsumowanie</h2>
+
+<p>W taki sposób stworzyłam komponent, który rozwiązuje mój problem. Po dodaniu stylowania tak prezentuje się efekt końcowy:</p>
+
+<p><img src="/assets/img/niestandardowy-input-w-vue-okiem-poczatkujacego/niestandartdowy-input-w-vue-okiem-poczatkujacego-img3.png" alt="Encryptor - Gotowy niestandardowy input" /></p>
+
+<p>Mój komponent wykorzystam w projekcie dodając do niego walidację dla każdego typu danych, jakich będę porzebować. Mam możliwość dodania kilku pól input i wybrania odpowiedniego typu dla każdego z nich.</p>
+
+<p>Jako że jestem osobą początkującą, będę ogromnie wdzięczna wszystkim, którzy poinformują mnie o błędach w moim kodzie :) Jeśli macie jakieś pomysły jak inaczej można podejść do problemu lub co można usprawnić, podzielcie się swoimi przemyślaniami!</p>
+
+<p>Ostateczny snippet z kodem jest zaprezentowany powyżej, można go również znaleźć na moim Githubie:</p>
+
+<p><a href="https://github.com/karo-fox/vue-custom-input">https://github.com/karo-fox/vue-custom-input</a></p>
+
+<p>Jeśli chcesz sprawdzić moje postępy w projekcie, kod można znaleźć tutaj:</p>
+
+<p><a href="https://github.com/karo-fox/encryptor">https://github.com/karo-fox/encryptor</a></p>
+
+<hr />
+
+<p>Powyższy post został opublikowany oryginalnie 20.03.2022 na platforme OhMyDev</p>

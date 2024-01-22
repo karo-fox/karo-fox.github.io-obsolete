@@ -1,0 +1,73 @@
+<p>Ostatnio brałam udział w dyskusji dotyczącej wyrażania braku wartości w kodzie. Rozmowa dość szybko wygasła, skłoniła mnie jednak do pochylenia się nad tematem.</p>
+
+<h2 id="its-a-trap"><strong><em>It’s a trap</em></strong></h2>
+
+<p>W “Czystym Kodzie” zwracanie i przekazywanie <code class="language-plaintext highlighter-rouge">null</code> nazywane jest złą praktyką i główną operacją powodującą powstawanie błędów<sup id="fnref:1" role="doc-noteref"><a href="#fn:1" class="footnote" rel="footnote">1</a></sup>. Sam pomysłodawca <code class="language-plaintext highlighter-rouge">null reference</code>, Tony Hoare, mówi o niej <em>the billion dollar mistake</em> <sup id="fnref:2" role="doc-noteref"><a href="#fn:2" class="footnote" rel="footnote">2</a></sup>.</p>
+
+<p>Żeby uratować się przed <code class="language-plaintext highlighter-rouge">NullPointerException</code> i podobnymi potworkami w wielu językach na każdym kroku musimy sprawdzać, czy zmienna nie przechowuje wartości <code class="language-plaintext highlighter-rouge">null</code>. Powoduje to “nieczystość” kodu i utrudnia jego zrozumienie.</p>
+
+<p>Kolejnym problemem jest znaczenie <code class="language-plaintext highlighter-rouge">null</code>. Przykładowo, co oznacza <code class="language-plaintext highlighter-rouge">null</code> przypisane do zmiennej przechowującej adres? Czy adres jest nieznany? Czy jeszcze nie został wprowadzony, a spodziewamy się, że będzie? Czy po prostu nie został jeszcze zainicjalizowany? A może <code class="language-plaintext highlighter-rouge">null</code> oznacza, że adres jest tajny i nie mamy możliwości odczytania go?</p>
+
+<p>Tak więc jasne jest, że <code class="language-plaintext highlighter-rouge">null</code> może sprawiać problemy. Niewątpliwie jest jednak czymś przydatnym. Na szczęście współcześnie języki programowania udostępniają wiele sposobów na ułatwienie pracy z pustymi wartościami.</p>
+
+<h2 id="javascript-i-typescript">JavaScript i TypeScript</h2>
+
+<p><code class="language-plaintext highlighter-rouge">null</code> to jedna z <code class="language-plaintext highlighter-rouge">primitive values</code> języka JavaScript. Reprezentuje <em>celowy</em> brak jakiejkolwiek wartości. Język ten posiada również inną wartość: <code class="language-plaintext highlighter-rouge">undefined</code>. Ona z kolei oznacza, że obiektowi <em>jeszcze</em> nie została przypisana wartość.</p>
+
+<p>Takie rozróżnienie niweluje jeden ze wspomnianych problemów. Jeśli przykładowy adres jest <code class="language-plaintext highlighter-rouge">undefined</code>, to oczekuje na swoją wartość. Jeśli zaś pod adresem kryje się <code class="language-plaintext highlighter-rouge">null</code>, to taki brak wartości jest celowy.</p>
+
+<p>Dodatkowe możliwości oferuje korzystanie z TypeScripta. Ustawienie opcji <code class="language-plaintext highlighter-rouge">TSConfig strictNullChecks</code> na <code class="language-plaintext highlighter-rouge">true</code> sprawia, że <code class="language-plaintext highlighter-rouge">undefined</code> i <code class="language-plaintext highlighter-rouge">null</code> otrzymują własne typy. Jeśli będą one używane w miejscu, gdzie oczekiwana jest konkretna wartość, zostanie wywołany <code class="language-plaintext highlighter-rouge">TypeError</code>.</p>
+
+<h2 id="dart-c-kotlin">Dart, C#, Kotlin</h2>
+
+<p>To języki, które oferują różne operatory ułatwiające pracę z wartościami <code class="language-plaintext highlighter-rouge">null</code>. Są proste i wygodne w użyciu oraz nie utrudniają zrozumienia kodu.</p>
+
+<p>Zmienne w tych językach są domyślnie non-nullable, co oznacza, że nie mogą przechowywać wartości <code class="language-plaintext highlighter-rouge">null</code> bez naszego “pozwolenia”. Oznaczyć zmienną jako nullable możemy przez użycie dodanie <code class="language-plaintext highlighter-rouge">?</code> do typu zmiennej przy jej deklaracji, np. w Darcie:</p>
+
+<div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">String</span><span class="o">?</span> <span class="n">name</span>
+</code></pre></div></div>
+
+<p>Równie przydatny jest operator <code class="language-plaintext highlighter-rouge">??</code> w Darcie i C#, <code class="language-plaintext highlighter-rouge">?:</code> w Kotlinie. Jego zastosowanie wygląda tak, na przykładzie Darta:</p>
+
+<div class="language-dart highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">String</span> <span class="n">playerName</span> <span class="o">=</span> <span class="n">name</span> <span class="o">??</span> <span class="s">"Guest"</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Jeśli wyrażenie po lewej stronie nie jest nullem, operator je zwróci. W przeciwnym wypadku operator zwróci wyrażenie po prawej stronie.</p>
+
+<p>Języki te oferują jeszcze więcej metod na null-safety. Co ważne, są one bardzo wygodne w użyciu i mało problematyczne. Sprawiają, że pilnowanie pustych wartości staje się proste, a pojawienie się nulla w nieoczekiwanym momencie wywoła compile-time error. Dzięki temu mamy szansę na naprawienie buga przed jego wystąpieniem.</p>
+
+<h2 id="rust-i-haskell">Rust i Haskell</h2>
+
+<p>Te języki nie mają odpowiednika <code class="language-plaintext highlighter-rouge">null</code>.</p>
+
+<p>Rust posiada enumerator <code class="language-plaintext highlighter-rouge">Option&lt;T&gt;</code>, którego implementacja wygląda tak:</p>
+
+<div class="language-rs highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">pub</span> <span class="k">enum</span> <span class="nb">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="nb">None</span><span class="p">,</span>
+    <span class="nf">Some</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Option</code> reprezentuje opcjonalną wartość. Option może mieć wariant <code class="language-plaintext highlighter-rouge">Some</code>, wtedy przechowuje wartość, lub <code class="language-plaintext highlighter-rouge">None</code>, kiedy jej nie przechowuje.</p>
+
+<p>Użycie typu <code class="language-plaintext highlighter-rouge">Option</code> wymusza obsłużenie obu wariantów, gdy chcemy uzyskać dostęp do zmiennej. Tak więc jeśli gdzieś pojawi się brak wartości, to musi on zostać poprawnie obsłużony w kodzie. W ten sposób program zostaje zabezpieczony przed niespodziewanym wystąpieniem nulla.</p>
+
+<p>Podobne rozwiązanie prezentuje Haskell ze swoją monadą <code class="language-plaintext highlighter-rouge">Maybe</code>, z wariantami <code class="language-plaintext highlighter-rouge">Just</code> i <code class="language-plaintext highlighter-rouge">Nothing</code>.</p>
+
+<h2 id="podsumowanie">Podsumowanie</h2>
+
+<p><code class="language-plaintext highlighter-rouge">null</code> jest problematyczny, ale współcześnie istnieje wiele narzędzi pomagających w rozwiązaniu kłopotów z nim związanych. Zaprezentowałam te, które znam, ale to na pewno nie wszystkie. Chętnie poszerzę swoją wiedzę, więc zachęcam do dzielenia się nią w komentarzach!</p>
+
+<hr />
+
+<p>Powyższy post został opublikowany oryginalnie 25.05.2022 na platforme OhMyDev</p>
+<div class="footnotes" role="doc-endnotes">
+  <ol>
+    <li id="fn:1" role="doc-endnote">
+      <p>R. C. Martin, <em>Czysty Kod. Podręcznik dobrego programisty</em>, Helion 2014, s. 130-132 <a href="#fnref:1" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+    <li id="fn:2" role="doc-endnote">
+      <p><a href="https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/">https://www.infoq.com/presentations/Null-References-The-Billion-Dollar-Mistake-Tony-Hoare/</a> <a href="#fnref:2" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+    </li>
+  </ol>
+</div>
