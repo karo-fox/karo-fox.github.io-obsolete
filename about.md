@@ -1,7 +1,5 @@
 ---
-# the default layout is 'page'
-icon: fas fa-info-circle
-order: 4
+permalink: /about/
 ---
 
 Jestem początkującą programistką i studentką informatyki. Programowaniem zainteresowałam się jeszcze przed liceum i od tego czasu ciągle badam nowe ciekawe zagadnienia. Jeśli chcesz zapoznać się z moim kodem, zapraszam na [Githuba](https://github.com/karo-fox).
